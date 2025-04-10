@@ -1,0 +1,207 @@
+/* --- Previous dashboard styles remain here --- */
+/* Basic Reset & Body Style */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: url('https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyNjA3fDB8MXxwaG90by1yZWxhdGVkfDE0fHx8fHx8Mnx8MTYxNjcwMTYwOQ&ixlib=rb-1.2.1&q=80&w=1920') no-repeat center center fixed;
+    background-size: cover;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Prevent body scrollbars */
+}
+/* Dashboard Container */
+.dashboard-container {
+    display: flex;
+    width: 95%;
+    max-width: 1600px;
+    height: 90vh;
+    gap: 20px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    overflow: hidden;
+}
+/* General Panel Styling */
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 0; /* Remove padding from panel if widgets have it */
+    border-radius: 10px;
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    /* Add scrollbar styling if desired */
+}
+.panel::-webkit-scrollbar { width: 8px; }
+.panel::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.2); border-radius: 4px; }
+.panel::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+
+/* Left Panel (To-Do HUD) */
+.left-panel {
+    flex: 1;
+    background-color: rgba(30, 30, 30, 0.75);
+    backdrop-filter: blur(3px);
+    color: #e0e0e0;
+    padding: 20px; /* Add padding back here since removed from .panel */
+}
+/* ... (keep existing To-Do styles: h2, input, button, list, li, etc.) ... */
+.left-panel h2 { text-align: center; margin-bottom: 10px; color: #fff; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 10px; }
+.todo-input-area { display: flex; gap: 5px; margin-bottom: 15px; }
+#new-task-input { flex-grow: 1; padding: 8px 10px; border: 1px solid #555; border-radius: 4px; background-color: rgba(255, 255, 255, 0.1); color: #fff; font-size: 0.9em; }
+#new-task-input::placeholder { color: #aaa; }
+#add-task-btn { padding: 8px 12px; cursor: pointer; background-color: #4CAF50; color: white; border: none; border-radius: 4px; font-weight: bold; font-size: 1.1em; line-height: 1; transition: background-color 0.2s ease; }
+#add-task-btn:hover { background-color: #45a049; }
+#task-list { list-style: none; padding: 0; flex-grow: 1; }
+#task-list li { background-color: rgba(255, 255, 255, 0.08); margin-bottom: 8px; padding: 10px 12px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; word-break: break-word; transition: background-color 0.2s ease; }
+#task-list li:hover { background-color: rgba(255, 255, 255, 0.15); }
+#task-list li .task-text { flex-grow: 1; margin-right: 10px; cursor: pointer; font-size: 0.95em; }
+#task-list li.completed .task-text { text-decoration: line-through; color: #aaa; font-style: italic; }
+#task-list li .remove-task-btn { background-color: #f44336; color: white; border: none; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 0.8em; width: 20px; height: 20px; line-height: 20px; text-align: center; flex-shrink: 0; transition: background-color 0.2s ease; }
+#task-list li .remove-task-btn:hover { background-color: #d32f2f; }
+
+/* Right Panel (Widget Container) */
+.right-panel {
+    flex: 2; /* Takes up 2 parts of the available space */
+    background: none;
+    padding: 0; /* Widgets handle their own padding */
+    /* overflow: hidden; /* May hide scrollbars if needed, use overflow-y: auto on .panel instead */
+}
+
+/* General Widget Styling */
+.widget {
+    background-color: rgba(245, 245, 245, 0.85);
+    backdrop-filter: blur(3px);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px; /* Add margin between widgets */
+    display: flex; /* Use flex for internal layout */
+    flex-direction: column; /* Stack content vertically */
+}
+.widget:last-child {
+     margin-bottom: 0; /* No margin on the last widget */
+}
+
+.widget h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #444;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 10px;
+    flex-shrink: 0; /* Prevent h2 from shrinking */
+}
+
+/* --- NEW Styles for 3D Model Widget --- */
+.model-widget {
+    flex: 2 1 400px; /* Allow flex grow/shrink, base height 400px (adjust as needed) */
+    /* Or you could give it a fixed height: height: 400px; */
+    min-height: 300px; /* Ensure it has some minimum height */
+}
+
+#model-canvas-container {
+    flex-grow: 1; /* Make the container take available vertical space */
+    position: relative; /* Needed for absolute positioning of loading indicator */
+    background-color: #cccccc; /* A neutral background for the canvas area */
+    border-radius: 5px; /* Match widget style */
+    overflow: hidden; /* Ensure canvas doesn't spill out */
+    min-height: 250px; /* Minimum height for the canvas area */
+    display: flex; /* Centers the loading indicator */
+    justify-content: center;
+    align-items: center;
+}
+
+#model-canvas-container canvas {
+    display: block; /* Remove extra space below canvas */
+    width: 100%;   /* Ensure canvas fills container width */
+    height: 100%;  /* Ensure canvas fills container height */
+    /* Ensure canvas is clickable through indicator initially */
+    position: relative;
+    z-index: 1;
+}
+
+#model-loading-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.1em;
+    font-family: sans-serif;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px 15px;
+    border-radius: 5px;
+    z-index: 2; /* Make sure it's above the canvas */
+    text-align: center;
+}
+/* --- End 3D Model Widget Styles --- */
+
+/* Music Widget */
+.music-widget {
+   flex: 1 1 auto; /* Let music take auto height based on iframe content */
+   min-height: 380px; /* Adjust based on standard iframe height */
+}
+#music-embed { flex-grow: 1; display: flex; justify-content: center; align-items: center; min-height: 300px; }
+#music-embed iframe { border-radius: 12px !important; border: none; width: 100%; height: 100%; min-height: 352px; }
+.embed-placeholder { border: 2px dashed #ccc; padding: 20px; text-align: center; color: #777; width: 80%; height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px; font-size: 0.9em; }
+.embed-placeholder small { margin-top: 15px; line-height: 1.4; font-size: 0.8em; color: #555; }
+
+/* Pomodoro Widget */
+.pomodoro-widget {
+    flex: 0 0 auto; /* Don't grow, don't shrink much, size based on content */
+    align-items: center; /* Center content */
+}
+/* ... (keep existing Pomodoro styles: display, status, controls, buttons) ... */
+#timer-display { font-size: 3.5em; font-weight: bold; color: #333; margin: 5px 0 10px; font-family: 'Courier New', Courier, monospace; }
+#timer-status { font-size: 1em; color: #555; margin-bottom: 15px; font-weight: 500; }
+.timer-controls { display: flex; justify-content: center; gap: 10px; width: 100%;}
+.timer-controls button { padding: 8px 15px; font-size: 0.9em; cursor: pointer; border: none; border-radius: 5px; transition: background-color 0.2s ease, transform 0.1s ease; }
+.timer-controls button:active { transform: scale(0.98); }
+#start-pause-btn { background-color: #28a745; color: white; }
+#start-pause-btn:hover { background-color: #218838; }
+#start-pause-btn.running { background-color: #ffc107; color: #333; }
+#start-pause-btn.running:hover { background-color: #e0a800; }
+#reset-btn { background-color: #dc3545; color: white; }
+#reset-btn:hover { background-color: #c82333; }
+#skip-btn { background-color: #6c757d; color: white; }
+#skip-btn:hover { background-color: #5a6268; }
+.timer-settings { margin-top: 15px; font-size: 0.8em; color: #888; cursor: not-allowed; }
+
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .left-panel { flex: 1.5; } /* Give ToDo slightly more relative space */
+    .right-panel { flex: 2.5; }
+    #timer-display { font-size: 3em; }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+        height: auto;
+        max-height: 100vh; /* Allow scrolling of whole container if needed */
+        width: 100%;
+        padding: 10px;
+        border-radius: 0;
+        overflow-y: auto; /* Allow container to scroll */
+    }
+    .panel {
+        max-height: none; /* Remove max height for panels */
+        overflow-y: visible; /* Disable panel scrolling */
+        padding: 15px; /* Add padding back for mobile */
+    }
+     .right-panel {
+        padding: 0; /* Remove padding again if widgets have it */
+    }
+    .left-panel, .right-panel {
+        flex: none;
+        width: 100%;
+    }
+     .widget { margin-bottom: 10px; padding: 15px; }
+    .model-widget { min-height: 350px; flex-basis: 350px; }
+    #model-canvas-container { min-height: 280px; }
+    #timer-display { font-size: 2.5em; }
+    .timer-controls button { padding: 8px 12px; font-size: 0.85em; }
+}

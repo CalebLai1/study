@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Shop Model Viewer</title>
+<style>
+body{margin:0;overflow:hidden;background:#f0f0f0;font-family:sans-serif}
+canvas{display:block}
+#loading-indicator{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1.5em;color:#333}
+#add-container,#timer-container,#list-container{position:absolute;width:340px;padding:16px;border:1px solid #ccc;border-radius:8px;background:transparent}
+#add-container{top:20px;left:20px}
+#timer-container{top:20px;right:20px;width:260px;text-align:center}
+#list-container{top:320px;left:20px}
+#add-container input,#add-container select{width:100%;box-sizing:border-box;margin-bottom:8px;padding:6px;font-size:.9rem}
+#add-btn{width:100%;padding:8px;font-size:1rem;cursor:pointer}
+#todo-table{width:100%;border-collapse:collapse}
+#todo-table th,#todo-table td{border:1px solid #ccc;padding:8px;text-align:left}
+#todo-table th{background:#e6e6e6}
+#timer-display{font-size:3rem;margin-bottom:16px}
+.timer-btn,.mode-btn{margin:4px;padding:6px 12px;font-size:.9rem;cursor:pointer}
+.mode-btn.active{background:#ccc}
+</style>
+</head>
+<body>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.163.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.163.0/examples/jsm/"}}</script>
+<div id="loading-indicator">Loading 3D Model...</div>
+<div id="add-container">
+<select id="class-input">
+<option value="" disabled selected>Select class</option>
+<option>Study Hall</option><option>Anatomy</option><option>Comp Sci</option><option>Pre Calc</option><option>Lang</option><option>Physics</option><option>Spanish</option><option>Outside School</option>
+</select>
+<input id="assignment-input" type="text" placeholder="Assignment name">
+<select id="urgency-input">
+<option value="none">None</option><option value="really-important">Really Important</option><option value="important">Important</option><option value="fine">It’s fine</option><option value="meh">Meh</option><option value="do-not-care">Do not care</option>
+</select>
+<input id="date-input" type="date">
+<button id="add-btn">➕ Add to list</button>
+</div>
+<div id="timer-container">
+<div id="timer-display">25:00</div>
+<div>
+<button class="mode-btn active" data-mode="focus">Focus 25</button>
+<button class="mode-btn" data-mode="short">Short 5</button>
+<button class="mode-btn" data-mode="long">Long 15</button>
+</div>
+<div>
+<button class="timer-btn" id="start-btn">Start</button>
+<button class="timer-btn" id="pause-btn">Pause</button>
+<button class="timer-btn" id="reset-btn">Reset</button>
+</div>
+</div>
+<div id="list-container">
+<table id="todo-table">
+<thead><tr><th>CLASS</th><th>Assignment</th><th>Urgency</th><th>Due Date</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+<script type="module" src="script.js"></script>
+<script>
+const tbody=document.querySelector('#todo-table tbody');
+document.getElementById('add-btn').addEventListener('click',()=>{
+const cls=document.getElementById('class-input').value;
+const name=document.getElementById('assignment-input').value.trim();
+const urg=document.getElementById('urgency-input').selectedOptions[0].text;
+const date=document.getElementById('date-input').value;
+if(!cls||!name||!date)return;
+const row=document.createElement('tr');
+row.innerHTML=`<td>${cls}</td><td>${name}</td><td>${urg}</td><td>${date}</td>`;
+tbody.appendChild(row);
+document.getElementById('assignment-input').value='';
+document.getElementById('date-input').value='';
+});
+const DURATIONS={focus:1500,short:300,long:900};
+let mode='focus',duration=DURATIONS[mode],timeLeft=duration,interval=null,display=document.getElementById('timer-display');
+const fmt=t=>`${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`;
+function upd(){display.textContent=fmt(timeLeft)}
+function tick(){if(timeLeft>0){timeLeft--;upd()}else{clearInterval(interval);interval=null}}
+document.querySelectorAll('.mode-btn').forEach(btn=>btn.addEventListener('click',e=>{
+document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+e.target.classList.add('active');
+mode=e.target.dataset.mode;
+duration=DURATIONS[mode];
+timeLeft=duration;
+clearInterval(interval);
+interval=null;
+upd();
+}));
+document.getElementById('start-btn').addEventListener('click',()=>{if(!interval)interval=setInterval(tick,1000)});
+document.getElementById('pause-btn').addEventListener('click',()=>{clearInterval(interval);interval=null});
+document.getElementById('reset-btn').addEventListener('click',()=>{clearInterval(interval);interval=null;timeLeft=duration;upd()});
+upd();
+</script>
+</body>
+</html>
